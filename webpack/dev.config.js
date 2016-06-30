@@ -61,16 +61,86 @@ reactTransform[1].transforms.push({
   locals: ['module']
 });
 
+
+var NodeTemplatePlugin = require("webpack/lib/node/NodeTemplatePlugin");
+var NodeTargetPlugin = require("webpack/lib/node/NodeTargetPlugin");
+var LibraryTemplatePlugin = require("webpack/lib/LibraryTemplatePlugin");
+var SingleEntryPlugin = require("webpack/lib/SingleEntryPlugin");
+
+function HelloWorldPlugin(options) {}
+
+HelloWorldPlugin.prototype.apply = function(compiler) {
+    //compiler.plugin('done', function() {
+        //console.log('Hello World!');
+    //});
+    compiler.plugin( 'emit', function( compilation, callback ) {
+
+        console.log(path.join( __dirname, '..', 'node_modules/thingy-loader/client.js' ));
+        compilation.fileDependencies.push(
+            path.join( __dirname, '..', 'node_modules/thingy-loader/client.js' )
+        );
+        callback();
+
+    });
+
+
+        //console.log(params);
+        //var entry = compilation.compiler.options.entry;
+        //var middlewareEntry;
+
+        ////console.log('entry',entry);
+
+        //Object.keys( entry ).some( key => {
+            //return [].concat( entry[ key ] ).some( moduleString => {
+                //if( ( /webpack-hot-middleware\/client/ ).test( moduleString ) ) {
+                    //middlewareEntry = moduleString;
+                    //return true;
+                //}
+            //})
+        //});
+
+        //if( !middlewareEntry ) {
+            //console.warn(
+                //'Warning: webpack-hot-2048 could not find webpack-hot-middlware/client anywhere in your entry config. This module will be disabled.'
+            //);
+            //return;
+        //}
+
+        //const matchResult = middlewareEntry.match( /\?.+$/ ) || '';
+        //const queryString = matchResult && matchResult.length ?
+            //matchResult[ 0 ] : '';
+
+        //compiler.addEntry( {}, 'fuck', 'you', callback );
+        ////callback();
+    //});
+        
+        //const sourcePath = path.join( process.cwd(), 'node_modules/thingy/client.js' );
+        //require('fs').readFile( sourcePath, 'utf8', function( err, data ) {
+            //if( err ) {
+                //throw err;
+            //}
+            //compilation.assets[ 'thingy/client' + queryString ] = {
+                //source: function () { return data; },
+                //size:   function () { return data.length; }
+            //};
+            //console.log(
+                //'queryString:', queryString,'and',compilation.fileDependencies
+            //);
+            //callback();
+        //});
+    //});
+};
+
 module.exports = {
   devtool: 'inline-source-map',
   context: path.resolve(__dirname, '..'),
   entry: {
     'main': [
-      'webpack-hot-middleware/client?path=http://' + host + ':' + port + '/__webpack_hmr',
+      'thingy?website=http://andrewray.me!webpack-hot-middleware/client?path=http://' + host + ':' + port + '/__webpack_hmr',
       'bootstrap-sass!./src/theme/bootstrap.config.js',
       'font-awesome-webpack!./src/theme/font-awesome.config.js',
       './src/client.js'
-    ]
+    ],
   },
   output: {
     path: assetsPath,
@@ -110,6 +180,7 @@ module.exports = {
       __DEVELOPMENT__: true,
       __DEVTOOLS__: true  // <-------- DISABLE redux-devtools HERE
     }),
+    new HelloWorldPlugin(),
     webpackIsomorphicToolsPlugin.development()
   ]
 };
